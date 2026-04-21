@@ -27,12 +27,11 @@ in
         autosuggestion.enable = true;
         syntaxHighlighting.enable = true;
 
-
         oh-my-zsh = {
             enable = true;
             plugins = [ "git" ];
             theme = "eastwood";
-        }
+        };
 
         # Launch hyprland on login if we have a display
         profileExtra = ''
@@ -46,12 +45,10 @@ in
 
     # Loop over all defined config directories and create
     # symlinks to the .config directory in $HOME.
-    xdg.configFile = builtins.mapAttrs
-        (name: subpath: {
+    xdg.configFile = builtins.mapAttrs (name: subpath: {
             source = create_symlink "${dotfiles}/${subpath}";
             recursive = true;
-        })
-        configs;
+        }) configs;
 
 
     home.packages = with pkgs; [

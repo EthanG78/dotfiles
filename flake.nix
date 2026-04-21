@@ -1,27 +1,26 @@
 {
-    description = "NixOS Configuration Flake";
+    description = "NixOS (ethang) Laptop Flake";
 
     inputs = {
-        nixpkgs.url = "nixpkgs/nixos-unstable";
-        home-manager = {
-            url = "github:nix-community/home-manager";
-            inputs.nixpkgs.follows = "nixpkgs";
-        };
+        nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+        home-manager.url = "github:nix-community/home-manager";
+        home-manager.inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    outputs = { self, nixpkgs, home-manager, ... }: {
-        nixosConfigurations.nixos-lp = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
+    outputs = { self, nixpkgs, home-manager, ... }:
+    let
+        system = "x86_64-linux";
+    in {
+        nixosConfigurations.ethang-lp = nixpkgs.lib.nixosSystem {
+            inherit system;
             modules = [
                 ./configuration.nix
                 home-manager.nixosModules.home-manager
                 {
-                    home-manager = {
-                        useGlobalPkgs = true;
-                        useUserPackages = true;
-                        users.ethang = import ./home.nix;
-                        backupFileExtension = "backup";
-                    };
+                    home-manager.useGlobalPkgs = true;
+                    home-manager.useUserPackages = true;
+                    home-manager.users.ethang = import ./home.nix;
+                    home-manager.backupFileExtension = "backup";
                 }
             ];
         };
