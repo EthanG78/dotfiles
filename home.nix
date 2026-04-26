@@ -3,7 +3,6 @@
 let
     dotfiles = "${config.home.homeDirectory}/dotfiles";
     create_symlink = path: config.lib.file.mkOutOfStoreSymlink path;
-
     # .config/<directory>
     configs = {
         alacritty = "alacritty";
@@ -19,7 +18,24 @@ in
 
     fonts.fontconfig.enable = true;
 
-    programs.git.enable = true;
+    home.pointerCursor = {
+        gtk.enable = true;
+        x11.enable = true;
+        name = "WhiteSur-cursors";
+        package = pkgs.whitesur-cursors;
+        size = 24;
+    };
+    
+    programs.git = {
+        enable = true;
+        settings = {
+            user = {
+                name = "EthanG78";
+                email = "ethangarnier78@gmail.com";
+            };
+            init.defaultBranch = "main";
+        };
+    };
 
     programs.zsh = {
         enable = true;
@@ -35,8 +51,8 @@ in
 
         # Launch hyprland on login if we have a display
         profileExtra = ''
-            if [-z "$WAYLAND_DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
-                exec hyprland
+            if [ -z "$WAYLAND_DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
+                exec start-hyprland
             fi
         '';
         
@@ -53,9 +69,11 @@ in
 
     home.packages = with pkgs; [
         nerd-fonts.fira-mono
+        whitesur-cursors
         brave
         neovim
         ripgrep
+        python3
         nodejs
         gcc
     ];
